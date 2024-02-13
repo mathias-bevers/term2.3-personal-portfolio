@@ -7,10 +7,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace getting_started.Migrations
+namespace EFCoreWebDemo.Migrations
 {
     [DbContext(typeof(EFCoreWebDemoContext))]
-    [Migration("20240212134519_CreateDatabase")]
+    [Migration("20240213124952_CreateDatabase")]
     partial class CreateDatabase
     {
         /// <inheritdoc />
@@ -27,10 +27,12 @@ namespace getting_started.Migrations
 
                     b.Property<string>("FirstName")
                         .IsRequired()
+                        .HasMaxLength(50)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("LastName")
                         .IsRequired()
+                        .HasMaxLength(75)
                         .HasColumnType("TEXT");
 
                     b.HasKey("AuthorId");
@@ -47,11 +49,9 @@ namespace getting_started.Migrations
                     b.Property<int>("AuthorId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("AutorId")
-                        .HasColumnType("INTEGER");
-
                     b.Property<string>("Title")
                         .IsRequired()
+                        .HasMaxLength(255)
                         .HasColumnType("TEXT");
 
                     b.HasKey("BookId");
@@ -63,18 +63,18 @@ namespace getting_started.Migrations
 
             modelBuilder.Entity("EFCoreWebDemo.Book", b =>
                 {
-                    b.HasOne("EFCoreWebDemo.Author", "author")
-                        .WithMany("books")
+                    b.HasOne("EFCoreWebDemo.Author", "Author")
+                        .WithMany("Books")
                         .HasForeignKey("AuthorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("author");
+                    b.Navigation("Author");
                 });
 
             modelBuilder.Entity("EFCoreWebDemo.Author", b =>
                 {
-                    b.Navigation("books");
+                    b.Navigation("Books");
                 });
 #pragma warning restore 612, 618
         }

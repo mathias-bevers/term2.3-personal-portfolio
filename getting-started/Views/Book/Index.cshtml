@@ -1,0 +1,19 @@
+@model IEnumerable<EFCoreWebDemo.Author>
+@{
+    ViewBag.Title = "Authors and their books";
+}
+<h1>@ViewBag.Title</h1>
+@if(Model.Any()){
+    <ul>
+        @foreach(var author in Model){
+            <li>@author.FirstName @author.LastName
+                <ul>
+                    @foreach(var book in author.Books){
+                        <li>@book.Title</li>
+                    }
+                </ul>
+            </li>
+        }
+    </ul>
+}
+<div>@Html.ActionLink("New", "create")</div>

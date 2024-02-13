@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace getting_started.Migrations
+namespace EFCoreWebDemo.Migrations
 {
     /// <inheritdoc />
     public partial class CreateDatabase : Migration
@@ -16,8 +16,8 @@ namespace getting_started.Migrations
                 {
                     AuthorId = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    FirstName = table.Column<string>(type: "TEXT", nullable: false),
-                    LastName = table.Column<string>(type: "TEXT", nullable: false)
+                    FirstName = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
+                    LastName = table.Column<string>(type: "TEXT", maxLength: 75, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -30,8 +30,7 @@ namespace getting_started.Migrations
                 {
                     BookId = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    Title = table.Column<string>(type: "TEXT", nullable: false),
-                    AutorId = table.Column<int>(type: "INTEGER", nullable: false),
+                    Title = table.Column<string>(type: "TEXT", maxLength: 255, nullable: false),
                     AuthorId = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>

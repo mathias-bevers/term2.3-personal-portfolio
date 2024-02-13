@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 
 namespace EFCoreWebDemo.Controllers
 {
@@ -10,26 +10,27 @@ namespace EFCoreWebDemo.Controllers
         {
             using (var context = new EFCoreWebDemoContext())
             {
-                var model = await context.Authors.Include(a => a.Books).AsNoTracking().ToListAsync();
+                var model = await context.Authors.Include(author => author.Books).AsNoTracking().ToListAsync();
                 return View(model);
             }
-            
-        }  
-        
+        }
+
         [HttpGet]
         public async Task<IActionResult> Create()
         {
-            using(var context = new EFCoreWebDemoContext())
+            using (var context = new EFCoreWebDemoContext())
             {
-                var authors = await context.Authors.Select(a => new SelectListItem {
-                    Value = a.AuthorId.ToString(), 
-                    Text = $"{a.FirstName} {a.LastName}"
+                var authors = await context.Authors.Select(author => new SelectListItem
+                {
+                    Value = author.AuthorId.ToString(),
+                    Text = $"{author.FirstName} {author.LastName}"
                 }).ToListAsync();
                 ViewBag.Authors = authors;
             }
+
             return View();
         }
-        
+
         [HttpPost]
         public async Task<IActionResult> Create([Bind("Title, AuthorId")] Book book)
         {
