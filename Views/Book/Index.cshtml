@@ -1,0 +1,23 @@
+@model IEnumerable<Author>
+@{
+    ViewBag.Title = "Authors and their books";
+}
+<h1>@ViewBag.Title</h1>
+@if (Model.Any())
+{
+    <ul>
+        @foreach (Author author in Model)
+        {
+            <li>
+                @author.FirstName @author.LastName
+                <ul>
+                    @foreach (Book book in author.Books)
+                    {
+                        <li>@book.Title</li>
+                    }
+                </ul>
+            </li>
+        }
+    </ul>
+}
+<div>@Html.ActionLink("New", "create")</div>
