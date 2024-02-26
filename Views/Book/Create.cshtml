@@ -3,15 +3,18 @@
     ViewBag.Title = "New Book";
 }
 <h1>@ViewBag.Title</h1>
-@using (Html.BeginForm())
+@using (Html.BeginForm("Create", "Book", FormMethod.Post))
 {
     <div class="form-group">
-        @Html.LabelFor(model => model.AuthorId)
-        @Html.DropDownListFor(model => model.AuthorId, (IEnumerable<SelectListItem>)ViewBag.Authors, string.Empty, new { @class = "form-control" })
+        @Html.LabelFor(book => book.AuthorID)
+        @Html.DropDownListFor(book => book.AuthorID, 
+            (IEnumerable<SelectListItem>)ViewBag.Authors, "Please select an author...", new { @class = "form-control" })
+        @Html.ValidationMessageFor(book => book.AuthorID, "", new { @class = "text-danger" })
     </div>
     <div class="form-group">
-        @Html.LabelFor(model => model.Title)
-        @Html.TextBoxFor(model => model.Title, new { @class = "form-control" })
+        @Html.LabelFor(book => book.Title)
+        @Html.TextBoxFor(book => book.Title, new { @class = "form-control" })
+        @Html.ValidationMessageFor(book => book.Title, "", new { @class = "text-danger" })
     </div>
-    <button type="submit" class="btn btn-default">Submit</button>
+    <button type="submit" class="btn-default">Submit</button>
 }

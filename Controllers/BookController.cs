@@ -7,40 +7,44 @@ namespace PersonalPortfolio.Controllers
 {
     public class BookController : Controller
     {
-        public async Task<IActionResult> Index()
+        private List<Author> authors;
+        private List<SelectListItem> selectableAuthors;
+
+        public BookController()
         {
-            using (var context = new LibraryDbContext())
-            {
-                List<Author> model = await context.Authors.Include(author => author.Books).AsNoTracking().ToListAsync();
-                return View(model);
-            }
+            using var db = new LibraryDbContext();
+            authors = db.Authors.Include(author => author.Books).AsNoTracking().ToList();
+
+            selectableAuthors = authors.Select(author => new SelectListItem($"{author.FirstName} {author.LastName}",
+                author.AuthorID.ToString())).ToList();
+        }
+        
+        public IActionResult Index()
+        {
+                return View(authors);
         }
 
         [HttpGet]
-        public async Task<IActionResult> Create()
+        public IActionResult Create()
         {
-            using (var context = new LibraryDbContext())
-            {
-                List<SelectListItem> authors = await context.Authors.Select(author => new SelectListItem
-                {
-                    Value = author.AuthorId.ToString(),
-                    Text = $"{author.FirstName} {author.LastName}"
-                }).ToListAsync();
-                ViewBag.Authors = authors;
-            }
-
+            ViewBag.Authors = selectableAuthors;
             return View();
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([Bind("Title, AuthorId")] Book book)
+        public async Task<IActionResult> Create([Bind("Title, AuthorID")] Book book)
         {
-            using (var context = new LibraryDbContext())
+            await using var context = new LibraryDbContext();
+            
+            if (!ModelState.IsValid)
             {
-                context.Books.Add(book);
-                await context.SaveChangesAsync();
-                return RedirectToAction("Index");
+                ViewBag.Authors = selectableAuthors;
+                return View(book);
             }
+            
+            context.Books.Add(book);
+            await context.SaveChangesAsync();
+            return RedirectToAction("Index");
         }
     }
 }

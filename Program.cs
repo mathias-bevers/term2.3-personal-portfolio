@@ -8,6 +8,7 @@ namespace PersonalPortfolio
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+            builder.WebHost.UseStaticWebAssets();
 
             WebApplication app = builder.Build();
 

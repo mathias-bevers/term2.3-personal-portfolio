@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using PersonalPortfolio.Models;
 
 namespace PersonalPortfolio.Controllers
@@ -17,15 +18,16 @@ namespace PersonalPortfolio.Controllers
 
         [HttpGet] public IActionResult Create() => View();
 
-        [HttpPost]
+        [HttpPost, ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("FirstName, LastName")] Author author)
         {
-            using (var context = new LibraryDbContext())
-            {
-                context.Add(author);
-                await context.SaveChangesAsync();
-                return RedirectToAction("Index");
-            }
+            await using var context = new LibraryDbContext();
+
+            if (!ModelState.IsValid) { return View(author); }
+
+            context.Add(author);
+            await context.SaveChangesAsync();
+            return RedirectToAction("Index");
         }
     }
 }

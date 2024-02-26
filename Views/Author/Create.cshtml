@@ -2,16 +2,20 @@
 @{
     ViewBag.Title = "New Author";
 }
+
 <h1>@ViewBag.Title</h1>
-@using (Html.BeginForm())
+@using (Html.BeginForm("Create", "Author", FormMethod.Post))
 {
+    @Html.AntiForgeryToken()
     <div class="form-group">
-        @Html.LabelFor(model => model.FirstName)
-        @Html.TextBoxFor(model => model.FirstName, new { @class = "form-control" })
+        @Html.LabelFor(author => author.FirstName)
+        @Html.TextBoxFor(author => author.FirstName, new { @class = "form-control" })
+        @Html.ValidationMessageFor(author => author.FirstName, "", new { @class = "text-danger" })
     </div>
     <div class="form-group">
-        @Html.LabelFor(model => model.LastName)
-        @Html.TextBoxFor(model => model.LastName, new { @class = "form-control" })
+        @Html.LabelFor(author => author.LastName)
+        @Html.TextBoxFor(author => author.LastName, new { @class = "form-control" })
+        @Html.ValidationMessageFor(author => author.LastName, "", new { @class = "text-danger" })
     </div>
-    <button type="submit" class="btn btn-default">Submit</button>
+    <button type="submit" class="btn-default">Submit</button>
 }
