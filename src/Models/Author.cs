@@ -15,5 +15,8 @@ namespace PersonalPortfolio.Models
         public string LastName { get; set; }
         
         public ICollection<Book> Books { get; set; } = new List<Book>();
+
+        [NotMapped] 
+        public string FullName => $"{FirstName} {LastName}";
     }
 }
