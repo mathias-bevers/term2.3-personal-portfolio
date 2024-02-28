@@ -13,9 +13,8 @@ namespace PersonalPortfolio
 
         public LibraryDbContext()
         {
-            var folder = Environment.SpecialFolder.LocalApplicationData;
-            string path = Environment.GetFolderPath(folder);
-            databasePath = Path.Join(path, "pp4", "library-database.db");
+            string path = Directory.GetCurrentDirectory();
+            databasePath = Path.Join(path, "library-database.db");
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder options) =>

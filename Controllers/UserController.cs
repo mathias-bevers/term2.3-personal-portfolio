@@ -26,9 +26,15 @@ namespace PersonalPortfolio.Controllers
                 user.ErrorMessage = "Invalid credentials!";
                 return View("Index", user);
             }
+            
+            HttpContext.Session.SetSessionObjectAsJson(Settings.SESSION_USER_KEY, userDetail);
+            return RedirectToAction("Index");
+        }
 
-            //TODO: Set session.
-            throw new NotImplementedException("");
+        public ActionResult Logout()
+        {
+            HttpContext.Session.Clear();
+            return RedirectToAction("Index");
         }
     }
 }
