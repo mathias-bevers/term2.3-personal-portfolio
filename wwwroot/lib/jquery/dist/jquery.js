@@ -794,7 +794,7 @@
                                     if ((elem = context.getElementById(m))) {
 
                                         // Support: IE, Opera, Webkit
-                                        // TODO: identify versions
+                                        // TODO : identify versions
                                         // getElementById can match elements by name instead of ID
                                         if (elem.id === m) {
                                             results.push(elem);
@@ -808,7 +808,7 @@
                                 } else {
 
                                     // Support: IE, Opera, Webkit
-                                    // TODO: identify versions
+                                    // TODO : identify versions
                                     // getElementById can match elements by name instead of ID
                                     if (newContext && (elem = newContext.getElementById(m)) &&
                                         contains(context, elem) &&
@@ -4390,7 +4390,7 @@
 //	2. Improve the module's maintainability by reducing the storage
 //		paths to a single mechanism.
 //	3. Use the same single mechanism to support "private" and "user" data.
-//	4. _Never_ expose "private" data to user code (TODO: Drop _data, _removeData)
+//	4. _Never_ expose "private" data to user code (TODO : Drop _data, _removeData)
 //	5. Avoid exposing implementation details on user objects (eg. expando properties)
 //	6. Provide a clear path for implementation upgrade to WeakMap in 2014
 
@@ -4459,7 +4459,7 @@
             dataUser.remove(elem, name);
         },
 
-        // TODO: Now that all calls to _data and _removeData have been replaced
+        // TODO : Now that all calls to _data and _removeData have been replaced
         // with direct calls to dataPriv methods, these can be deprecated.
         _data: function (elem, name, data) {
             return dataPriv.access(elem, name, data);
@@ -10597,8 +10597,8 @@
 
 // Support: Safari <=7 - 9.1, Chrome <=37 - 49
 // Add the top/left cssHooks using jQuery.fn.position
-// Webkit bug: https://bugs.webkit.org/show_bug.cgi?id=29084
-// Blink bug: https://bugs.chromium.org/p/chromium/issues/detail?id=589347
+// Webkit bug : https://bugs.webkit.org/show_bug.cgi?id=29084
+// Blink bug : https://bugs.chromium.org/p/chromium/issues/detail?id=589347
 // getComputedStyle returns percent when specified for top/left/bottom/right;
 // rather than make the css module depend on the offset module, just check for it here
     jQuery.each(["top", "left"], function (_i, prop) {

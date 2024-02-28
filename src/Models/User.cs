@@ -22,10 +22,7 @@ namespace PersonalPortfolio.Models
         // The password also requires a capital letter; a lowercase letter; a number; and a special character.
         [Required(ErrorMessage = "Password cannot be empty!"), DataType(DataType.Password)]
         public string Password { get; set; }
-
-        [NotMapped, Required, Compare("Password")]
-        public string PassworldValidation { get; set; }
-
-        [NotMapped] public string ErrorMessage { get; set; }
+        
+        [NotMapped] public string? ErrorMessage { get; set; }
     }
 }

@@ -19,7 +19,7 @@
             </tr>
             <tr>
                 <td></td>
-                <td>@Html.ValidationMessageFor(user => user.UserName)</td>
+                <td>@Html.ValidationMessageFor(user => user.UserName, "", new { @class = "text-danger" })</td>
             </tr>
             <tr>
                 <td>@Html.LabelFor(user => user.Password)</td>
@@ -27,11 +27,11 @@
             </tr>
             <tr>
                 <td></td>
-                <td>@Html.ValidationMessageFor(user => user.Password)</td>
+                <td>@Html.ValidationMessageFor(user => user.Password, "", new { @class = "text-danger" })</td>
             </tr>
             <tr>
                 <td colspan="2">
-                    <label class="field-validation-error">@Html.DisplayFor(user => user.ErrorMessage)</label>
+                    <label class="text-danger">@Html.DisplayFor(user => user.ErrorMessage)</label>
                 </td>
             </tr>
             <tr>
@@ -52,9 +52,5 @@
     
     table {
         outline: solid #202020;
-    }
-    
-    .field-validation-error {
-                 color:red;
     }
 </style>

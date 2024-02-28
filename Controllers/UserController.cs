@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using PersonalPortfolio.Models;
 
 namespace PersonalPortfolio.Controllers
@@ -11,19 +12,23 @@ namespace PersonalPortfolio.Controllers
         }
 
         [HttpPost]
-        public ActionResult Authorize(User user)
+        public async Task<IActionResult> Authorize(User user)
         {
-            using var context = new LibraryDbContext();
+            await using var context = new LibraryDbContext();
 
             if (!ModelState.IsValid) { return View("Index", user); }
-            
-            User? userDetail = context.Users.FirstOrDefault(x => x.UserName == user.UserName
-                                                                 && x.Password == user.Password);
 
-            if (!ReferenceEquals(userDetail, null)) { return RedirectToAction("Index"); }
+            User? userDetail = await context.Users.FirstOrDefaultAsync(
+                x => x.UserName == user.UserName && x.Password == user.Password);
 
-            user.ErrorMessage = "Invalid credentials!";
-            return View("Index", user);
+            if (ReferenceEquals(userDetail, null))
+            {
+                user.ErrorMessage = "Invalid credentials!";
+                return View("Index", user);
+            }
+
+            //TODO: Set session.
+            throw new NotImplementedException("");
         }
     }
 }
