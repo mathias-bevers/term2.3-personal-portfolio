@@ -1,0 +1,90 @@
+@using PersonalPortfolio.Controllers
+@model User
+
+@using (Html.BeginForm("Authorize", "User", FormMethod.Post))
+{
+    <div class="h-100 d-flex align-items-center justify-content-center">
+        <div class="form-table">
+            <div class="row">
+                <div class="p-0 text-center">LOGIN</div>
+            </div>
+            <div class="row">
+                <div class="cell">@Html.LabelFor(user => user.UserName)</div>
+                <div class="cell">@Html.EditorFor(user => user.UserName)</div>
+            </div>
+            <div class="row">
+                <div class="cell"></div>
+                <div class="cell">@Html.ValidationMessageFor(user => user.UserName, "", new { @class = "text-danger" })</div>
+            </div>
+            <div class="row">
+                <div class="cell">@Html.LabelFor(user => user.Password)</div>
+                <div class="cell">@Html.EditorFor(user => user.Password)</div>
+            </div>
+            <div class="row">
+                <div class="cell"></div>
+                <div class="cell">@Html.ValidationMessageFor(user => user.Password, "", new { @class = "text-danger" })</div>
+            </div>
+            <div class="row">
+                <div class="cell">
+                    <label class="text-danger">@Html.DisplayFor(user => user.ErrorMessage)</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="cell button-container">
+                    <input type="submit" value="Login"/>
+                    <input type="reset" value="Reset"/>
+                    <input type="button" value="Register" onclick="location.href='@Url.Action("SwitchPartialPage", new { state = UserController.AuthorizationState.Register })'"/>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<style>
+    .form-table {
+        padding: 1rem;
+        outline: solid #202020;
+        flex-direction: column;
+        flex-wrap: wrap;
+        width: 30vw;
+        display: flex;
+    } 
+           
+    .row{
+        flex: 1;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        width: 100%;
+        margin: 0.25rem 0 0 0;
+    }
+    
+    .row:nth-child(1){
+        flex: 2;
+        font-size: 2rem;
+        margin: 0;
+    }
+        
+    .cell {
+        padding: 0;
+        display: flex;
+        flex: 1;
+        justify-content: space-between;
+    }
+    
+    input.text-box {
+        width: 100%;
+    }
+    
+    .button-container>input{
+        flex: 1;
+    }
+    
+    .button-container>input:nth-child(2){
+        margin: 0 2rem;
+    }
+    
+    input:not([type="submit"]){
+        font-weight: normal;
+    }
+</style>

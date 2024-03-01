@@ -1,75 +1,34 @@
 @using Microsoft.AspNetCore.Http
-@using PersonalPortfolio.Controllers;
+@using PersonalPortfolio.Controllers
 @model User
 
-@* TODO: this has to move to authorize page *@
 @inject IHttpContextAccessor HttpContextAccessor
 @{
     ViewBag.Title = "Login";
     HttpContext? httpContext = HttpContextAccessor.HttpContext;
-    
-    if (ReferenceEquals(httpContext, null)) { return; }
+
+    if (ReferenceEquals(httpContext, null)) { throw new NullReferenceException($"Could not access {nameof(HttpContext)}"); }
 
     var sessionObject = httpContext.Session.GetSessionObjectFromJson<User>(Settings.SESSION_USER_KEY);
 }
 
-
-@if (!ReferenceEquals(sessionObject, null))
+@if (ReferenceEquals(sessionObject, null))
 {
-    <div class="text-center">
-        <h1>Hello @sessionObject.UserName!</h1>
-        <input type="button" value="Logout" onclick="location.href='@Url.Action("Logout")'" />
-    </div>
+    var i = httpContext.Session.GetSessionObjectFromJson<int>(Settings.LOGIN_PAGE_ID_KEY);
+    switch (i)
+    {
+        case 0:
+            <partial name="LoginForm"/>
+            break;
+        case 1:
+            <partial name="RegisterForm"/>
+            break;
+    }
 }
 else
 {
-    @using (Html.BeginForm("Authorize", "User", FormMethod.Post))
-    {
-        <div class="h-100 d-flex align-items-center justify-content-center">
-            <table>
-                <tr>
-                    <th></th>
-                    <th>LOGIN</th>
-                </tr>
-                <tr>
-                    <td>@Html.LabelFor(user => user.UserName)</td>
-                    <td>@Html.EditorFor(user => user.UserName)</td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td>@Html.ValidationMessageFor(user => user.UserName, "", new { @class = "text-danger" })</td>
-                </tr>
-                <tr>
-                    <td>@Html.LabelFor(user => user.Password)</td>
-                    <td>@Html.EditorFor(user => user.Password)</td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td>@Html.ValidationMessageFor(user => user.Password, "", new { @class = "text-danger" })</td>
-                </tr>
-                <tr>
-                    <td colspan="2">
-                        <label class="text-danger">@Html.DisplayFor(user => user.ErrorMessage)</label>
-                    </td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td>
-                        <input type="submit" value="Login"/>
-                        <input type="reset" value="Reset"/>
-                    </td>
-                </tr>
-            </table>
-        </div>
-    }
+    <div class="text-center">
+        <h1>Hello @sessionObject.UserName</h1>
+        <input type="button" value="Logout" onclick="location.href='@Url.Action("Logout")'"/>
+    </div>
 }
-
-<style>
-    td:nth-child(odd){
-        padding-right: 50px;
-    }
-    
-    table {
-        outline: solid #202020;
-    }
-</style>
