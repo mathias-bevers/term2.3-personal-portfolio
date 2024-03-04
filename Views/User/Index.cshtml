@@ -1,34 +1,37 @@
 @using Microsoft.AspNetCore.Http
-@using PersonalPortfolio.Controllers
-@model User
+@model IEnumerable<User>
 
-@inject IHttpContextAccessor HttpContextAccessor
 @{
     ViewBag.Title = "Login";
-    HttpContext? httpContext = HttpContextAccessor.HttpContext;
 
-    if (ReferenceEquals(httpContext, null)) { throw new NullReferenceException($"Could not access {nameof(HttpContext)}"); }
-
-    var sessionObject = httpContext.Session.GetSessionObjectFromJson<User>(Settings.SESSION_USER_KEY);
+    HttpContext httpContext = ViewContext.HttpContext;
+    var loggedInUser = httpContext.Session.GetSessionObjectFromJson<User>(Settings.SESSION_USER_KEY);
 }
 
-@if (ReferenceEquals(sessionObject, null))
-{
-    var i = httpContext.Session.GetSessionObjectFromJson<int>(Settings.LOGIN_PAGE_ID_KEY);
-    switch (i)
+<div class="text-center">
+    <h1>Hello @loggedInUser.UserName</h1>
+    <input type="button" value="Logout" onclick="location.href='@Url.Action("Logout")'"/>
+    @if (loggedInUser.IsAdministrator)
     {
-        case 0:
-            <partial name="LoginForm"/>
-            break;
-        case 1:
-            <partial name="RegisterForm"/>
-            break;
+        <table>
+            <tr>
+                <th>ID</th>
+                <th>User name</th>
+                <th>Is administrator</th>
+            </tr>
+
+            @foreach (User user in Model)
+            {
+                <tr>
+                    <td>@user.UserID</td>
+                    <td>@user.UserName</td>
+                    <td>@user.IsAdministrator</td>
+                    <td>
+                        @Html.ActionLink("Edit", "Edit", new { id = user.UserID}) |
+                        @* @Html.ActionLink("Delete", "Delete", new { id = user.UserID}) *@
+                    </td>
+                </tr>
+            }
+        </table>
     }
-}
-else
-{
-    <div class="text-center">
-        <h1>Hello @sessionObject.UserName</h1>
-        <input type="button" value="Logout" onclick="location.href='@Url.Action("Logout")'"/>
-    </div>
-}
+</div>

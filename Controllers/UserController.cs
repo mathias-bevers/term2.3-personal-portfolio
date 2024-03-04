@@ -6,23 +6,26 @@ namespace PersonalPortfolio.Controllers
 {
     public class UserController : Controller
     {
-        public enum AuthorizationState
+        [HttpGet]
+        public async Task<IActionResult> Index()
         {
-            Login,
-            Register
-        };
+            var sessionLogin = HttpContext.Session.GetSessionObjectFromJson<User>(Settings.SESSION_USER_KEY);
 
-        public IActionResult Index()
-        {
-            return View();
+            if (ReferenceEquals(sessionLogin, null)) { return RedirectToAction("Login"); }
+
+            await using var db = new LibraryDbContext();
+            List<User> users = await db.Users.ToListAsync();
+            return View(users);
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Authorize(User user)
-        {
-            await using var db = new LibraryDbContext();
+        [HttpGet] public ActionResult Login() => View();
 
-            if (!ModelState.IsValid) { return View("Index", user); }
+        [HttpPost]
+        public async Task<IActionResult> Login(User user)
+        {
+            if (!ModelState.IsValid) { return View(user); }
+
+            await using var db = new LibraryDbContext();
 
             User? userDetail = await db.Users.FirstOrDefaultAsync(
                 x => x.UserName == user.UserName && x.Password == user.Password);
@@ -30,31 +33,35 @@ namespace PersonalPortfolio.Controllers
             if (ReferenceEquals(userDetail, null))
             {
                 user.ErrorMessage = "Invalid credentials!";
-                return View("Index", user);
+                return View(user);
             }
 
             HttpContext.Session.SetSessionObjectAsJson(Settings.SESSION_USER_KEY, userDetail);
             return RedirectToAction("Index");
         }
 
+        [HttpGet] public ActionResult Register() => View();
+
         [HttpPost]
-        public async Task<IActionResult> Create(User user, string confirmPW)
+        public async Task<IActionResult> Register(User user, string confirmPW)
         {
             await using var db = new LibraryDbContext();
-            
-            if (!ModelState.IsValid) { return View("Index", user); }
-            
+
+            if (!ModelState.IsValid) { return View(user); }
+
             if (!confirmPW.Equals(user.Password))
             {
                 ModelState.AddModelError("Password", "The passwords are not the same");
-                return View("Index", user);
+                return View(user);
             }
 
             if (await db.Users.AnyAsync(u => u.UserName.Equals(user.UserName)))
             {
                 ModelState.AddModelError("UserName", $"The username \'{user.UserName}\' is already taken");
-                return View("Index", user);
+                return View(user);
             }
+
+            user.IsAdministrator = false;
 
             db.Users.Add(user);
             await db.SaveChangesAsync();
@@ -62,16 +69,18 @@ namespace PersonalPortfolio.Controllers
             return RedirectToAction("Index");
         }
 
+        [HttpGet]
+        public ActionResult Edit(int id)
+        {
+            using var db = new LibraryDbContext();
+            User? user = db.Users.FirstOrDefault(u => u.UserID == id);
+            return View(user);
+        }
+
         public ActionResult Logout()
         {
             HttpContext.Session.Clear();
             return RedirectToAction("Index");
-        }
-
-        public ActionResult SwitchPartialPage(AuthorizationState state)
-        {
-            HttpContext.Session.SetSessionObjectAsJson(Settings.LOGIN_PAGE_ID_KEY, (int)state);
-            return View("Index");
         }
     }
 }

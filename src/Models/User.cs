@@ -17,12 +17,12 @@ namespace PersonalPortfolio.Models
 
         [Required(ErrorMessage = "Username cannot be empty!"), StringLength(25, MinimumLength = 3)]
         public string UserName { get; set; }
-
-        // The password has to be at least 8 characters but no more than 15 characters.
-        // The password also requires a capital letter; a lowercase letter; a number; and a special character.
+        
         [Required(ErrorMessage = "Password cannot be empty!"), DataType(DataType.Password)]
         public string Password { get; set; }
         
         [NotMapped] public string? ErrorMessage { get; set; }
+
+        public bool IsAdministrator { get; set; }
     }
 }
