@@ -14,8 +14,7 @@ namespace PersonalPortfolio
             builder.Services.AddSession(options =>
             {
                 options.Cookie.Name = ".PersonalPortfolio.Session";
-                options.IdleTimeout = TimeSpan.FromSeconds(10); //TODO: remove when done testing...
-                // options.IdleTimeout = TimeSpan.FromMinutes(1);
+                options.IdleTimeout = TimeSpan.FromMinutes(1);
                 options.Cookie.IsEssential = true;
             });
 

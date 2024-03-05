@@ -4,7 +4,7 @@ namespace PersonalPortfolio
 {
     public static class Utilities
     {
-        public static void SetSessionObjectAsJson(this ISession session, string key, object value) => 
+        public static void SetSessionObjectAsJson(this ISession session, string key, object? value) => 
             session.SetString(key, JsonSerializer.Serialize(value));
 
         public static T? GetSessionObjectFromJson<T>(this ISession session, string key)
