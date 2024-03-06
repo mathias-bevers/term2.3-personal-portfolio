@@ -14,7 +14,7 @@ namespace PersonalPortfolio.Controllers
             if (ReferenceEquals(sessionLogin, null)) { return RedirectToAction("Login"); }
 
             await using var db = new LibraryDbContext();
-            List<User?> users = await db.Users.ToListAsync();
+            List<User> users = await db.Users.ToListAsync();
             return View(users);
         }
 
@@ -43,7 +43,7 @@ namespace PersonalPortfolio.Controllers
         [HttpGet] public IActionResult Register() => View();
 
         [HttpPost]
-        public async Task<IActionResult> Register(User? user, string confirmPW)
+        public async Task<IActionResult> Register(User user, string confirmPW)
         {
             await using var db = new LibraryDbContext();
 
@@ -72,6 +72,13 @@ namespace PersonalPortfolio.Controllers
         [HttpGet]
         public IActionResult Edit(int id)
         {
+            var currentAdmin = HttpContext.Session.GetSessionObjectFromJson<User>(Settings.SESSION_USER_KEY);
+            if (ReferenceEquals(currentAdmin, null))
+            {
+                HttpContext.Items["ErrorMessage"] = "Only an administrator can edit users.";
+                return StatusCode(StatusCodes.Status401Unauthorized);
+            }
+
             using var db = new LibraryDbContext();
             User? user = db.Users.FirstOrDefault(u => u.UserID == id);
             return View(user);
@@ -80,37 +87,38 @@ namespace PersonalPortfolio.Controllers
         [HttpPost, ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit([Bind("UserID", "UserName, IsAdministrator")] User changedUser)
         {
-            await using (var db = new LibraryDbContext())
+            await using var db = new LibraryDbContext();
+
+            var currentAdmin = HttpContext.Session.GetSessionObjectFromJson<User>(Settings.SESSION_USER_KEY);
+            if (ReferenceEquals(currentAdmin, null))
             {
-                var currentAdmin = HttpContext.Session.GetSessionObjectFromJson<User>(Settings.SESSION_USER_KEY);
-                if (ReferenceEquals(currentAdmin, null))
-                {
-                    return StatusCode(StatusCodes.Status401Unauthorized, "Not logged in!");
-                }
-
-                if (changedUser.UserID == currentAdmin.UserID && !changedUser.IsAdministrator)
-                {
-                    ModelState.AddModelError("IsAdministrator", "Cannot revoke own admin rights");
-                }
-
-                ModelState.Remove("Password");
-
-                if (!ModelState.IsValid) { return View(changedUser); }
-
-                User? user = await db.Users.FirstOrDefaultAsync(u => u.UserID == changedUser.UserID);
-
-                if (ReferenceEquals(user, null))
-                {
-                    return NotFound($"Could not find user with id: {changedUser.UserID}!");
-                }
-
-                user.UserName = changedUser.UserName;
-                user.IsAdministrator = changedUser.IsAdministrator;
-
-                db.Users.Update(user);
-                await db.SaveChangesAsync();
-                return RedirectToAction("Index");
+                HttpContext.Items["ErrorMessage"] = "Cannot edit users when not logged in as administrator.";
+                return StatusCode(StatusCodes.Status400BadRequest);
             }
+
+            if (changedUser.UserID == currentAdmin.UserID && !changedUser.IsAdministrator)
+            {
+                ModelState.AddModelError("IsAdministrator", "Cannot revoke own admin rights");
+            }
+
+            ModelState.Remove("Password");
+
+            if (!ModelState.IsValid) { return View(changedUser); }
+
+            User? user = await db.Users.FirstOrDefaultAsync(u => u.UserID == changedUser.UserID);
+
+            if (ReferenceEquals(user, null))
+            {
+                HttpContext.Items["ErrorMessage"] = $"Could not find user with id: {changedUser.UserID}!";
+                return StatusCode(StatusCodes.Status404NotFound);
+            }
+
+            user.UserName = changedUser.UserName;
+            user.IsAdministrator = changedUser.IsAdministrator;
+
+            db.Users.Update(user);
+            await db.SaveChangesAsync();
+            return RedirectToAction("Index");
         }
 
         public async Task<IActionResult> Delete(int id)
@@ -121,14 +129,22 @@ namespace PersonalPortfolio.Controllers
                 {
                     User? user = await db.Users.FirstOrDefaultAsync(u => u.UserID == id);
 
-                    if (ReferenceEquals(user, null)) { return NotFound($"Could not find user with id: {id}!"); }
+                    if (ReferenceEquals(user, null))
+                    {
+                        HttpContext.Items["ErrorMessage"] = $"Could not find user with id: {id}!";
+                        return StatusCode(StatusCodes.Status404NotFound);
+                    }
 
                     db.Users.Remove(user);
                     await db.SaveChangesAsync();
                     return RedirectToAction("Index");
                 }
             }
-            catch (Exception e) { return StatusCode(StatusCodes.Status500InternalServerError, "Error deleting data"); }
+            catch (Exception e)
+            {
+                HttpContext.Items["ErrorMessage"] = "Error deleting data";
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
         }
 
         public ActionResult Logout()

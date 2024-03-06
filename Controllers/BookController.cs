@@ -10,12 +10,22 @@ namespace PersonalPortfolio.Controllers
         public async Task<IActionResult> Index()
         {
             await using var db = new LibraryDbContext();
-            return View(db.Authors.Include(author => author.Books).AsNoTracking());
+            List<Author> authors = await db.Authors.Include(author => author.Books).AsNoTracking().ToListAsync();
+            return View(authors);
         }
 
         [HttpGet]
         public async Task<IActionResult> Create()
         {
+            var user = HttpContext.Session.GetSessionObjectFromJson<User>(Settings.SESSION_USER_KEY);
+
+            if (user is not { IsAdministrator: true })
+            {
+                HttpContext.Items["ErrorMessage"] = "This page can only be accessed by administrators.";
+                return StatusCode(StatusCodes.Status401Unauthorized);
+            }
+
+
             await using var db = new LibraryDbContext();
             ViewBag.Authors = GenerateAuthorSelectList(db.Authors);
             return View();
@@ -28,7 +38,7 @@ namespace PersonalPortfolio.Controllers
 
             if (!ModelState.IsValid)
             {
-                ViewBag.Auhtors = GenerateAuthorSelectList(db.Authors);
+                ViewBag.Authors = GenerateAuthorSelectList(db.Authors);
                 return View(book);
             }
 

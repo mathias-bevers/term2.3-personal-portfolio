@@ -2,18 +2,16 @@
 
 @{
     ViewBag.Title = "User";
-
-    HttpContext httpContext = ViewContext.HttpContext;
-    var loggedInUser = httpContext.Session.GetSessionObjectFromJson<User>(Settings.SESSION_USER_KEY);
+    var index = ViewContext.HttpContext.Session.GetSessionObjectFromJson<User>(Settings.SESSION_USER_KEY);
 }
 
 <div class="page">
-    @if (ReferenceEquals(loggedInUser, null)) { throw new NullReferenceException("logged in user cannot be null at this point!"); }
+    @if (ReferenceEquals(index, null)) { throw new NullReferenceException("logged in user cannot be null at this point!"); }
 
-    <h1>Hello @loggedInUser.UserName</h1>
+    <h1>Hello @index.UserName</h1>
     <input type="button" value="Logout" onclick="location.href='@Url.Action("Logout")'"/>
 
-    @if (!loggedInUser.IsAdministrator) { return; }
+    @if (!index.IsAdministrator) { return; }
 
     <div class="break mt-5"></div>
 

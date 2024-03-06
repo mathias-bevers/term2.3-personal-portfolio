@@ -13,7 +13,17 @@ namespace PersonalPortfolio.Controllers
             return View(model);
         }
 
-        [HttpGet] public IActionResult Create() => View();
+        [HttpGet]
+        public IActionResult Create()
+        {
+            var user = HttpContext.Session.GetSessionObjectFromJson<User>(Settings.SESSION_USER_KEY);
+
+            if (user is { IsAdministrator: true }) { return View(); }
+
+            HttpContext.Items["ErrorMessage"] = "This page can only be accessed by administrators.";
+            return StatusCode(StatusCodes.Status401Unauthorized);
+
+        }
 
         [HttpPost, ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("FirstName, LastName")] Author author)

@@ -19,15 +19,5 @@ namespace PersonalPortfolio
 
         protected override void OnConfiguring(DbContextOptionsBuilder options) =>
             options.UseSqlite($"Data Source={databasePath}");
-
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            modelBuilder.Entity<User>();
-            modelBuilder.Entity<Author>()
-                .HasMany(e => e.Books)
-                .WithOne(e => e.Author)
-                .HasForeignKey(e => e.AuthorID)
-                .IsRequired();
-        }
     }
 }

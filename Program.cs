@@ -24,7 +24,7 @@ namespace PersonalPortfolio
             if (!app.Environment.IsDevelopment())
             {
                 app.UseExceptionHandler("/Home/Error");
-                app.UseHsts();
+                app.UseHsts();;
             }
 
 
@@ -41,6 +41,7 @@ namespace PersonalPortfolio
             app.UseSession();
             //app.UseResponseCompression();
             //app.UseResponseCaching();
+            app.UseStatusCodePagesWithReExecute("/Home/Error", "?errorCode={0}");
 
             app.MapControllerRoute("default", "{controller=Home}/{action=Index}/{id?}");
             app.Run();

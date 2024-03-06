@@ -1,6 +1,7 @@
 @model IEnumerable<Author>
 @{
     ViewBag.Title = "Authors and their books";
+    var user = ViewContext.HttpContext.Session.GetSessionObjectFromJson<User>(Settings.SESSION_USER_KEY);
 }
 <h1>@ViewBag.Title</h1>
 @if (Model.Any())
@@ -20,4 +21,7 @@
         }
     </ul>
 }
+
+@if (user is not { IsAdministrator: true }) { return; }
+
 <div>@Html.ActionLink("New", "create")</div>
