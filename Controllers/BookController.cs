@@ -7,44 +7,38 @@ namespace PersonalPortfolio.Controllers
 {
     public class BookController : Controller
     {
-        private List<Author> authors;
-        private List<SelectListItem> selectableAuthors;
-
-        public BookController()
+        public async Task<IActionResult> Index()
         {
-            using var db = new LibraryDbContext();
-            authors = db.Authors.Include(author => author.Books).AsNoTracking().ToList();
-
-            selectableAuthors = authors.Select(author => new SelectListItem($"{author.FirstName} {author.LastName}",
-                author.AuthorID.ToString())).ToList();
-        }
-        
-        public IActionResult Index()
-        {
-                return View(authors);
+            await using var db = new LibraryDbContext();
+            return View(db.Authors.Include(author => author.Books).AsNoTracking());
         }
 
         [HttpGet]
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            ViewBag.Authors = selectableAuthors;
+            await using var db = new LibraryDbContext();
+            ViewBag.Authors = GenerateAuthorSelectList(db.Authors);
             return View();
         }
 
         [HttpPost]
         public async Task<IActionResult> Create([Bind("Title, AuthorID")] Book book)
         {
-            await using var context = new LibraryDbContext();
-            
+            await using var db = new LibraryDbContext();
+
             if (!ModelState.IsValid)
             {
-                ViewBag.Authors = selectableAuthors;
+                ViewBag.Auhtors = GenerateAuthorSelectList(db.Authors);
                 return View(book);
             }
-            
-            context.Books.Add(book);
-            await context.SaveChangesAsync();
+
+            db.Books.Add(book);
+            await db.SaveChangesAsync();
             return RedirectToAction("Index");
         }
+
+        private static List<SelectListItem> GenerateAuthorSelectList(IEnumerable<Author> source) => source
+            .Select(author => new SelectListItem($"{author.FirstName} {author.LastName}", author.AuthorID.ToString()))
+            .ToList();
     }
 }

@@ -18,7 +18,7 @@ namespace PersonalPortfolio.Controllers
             return View(users);
         }
 
-        [HttpGet] public ActionResult Login() => View();
+        [HttpGet] public IActionResult Login() => View();
 
         [HttpPost]
         public async Task<IActionResult> Login(User user)
@@ -40,7 +40,7 @@ namespace PersonalPortfolio.Controllers
             return RedirectToAction("Index");
         }
 
-        [HttpGet] public ActionResult Register() => View();
+        [HttpGet] public IActionResult Register() => View();
 
         [HttpPost]
         public async Task<IActionResult> Register(User? user, string confirmPW)
@@ -70,7 +70,7 @@ namespace PersonalPortfolio.Controllers
         }
 
         [HttpGet]
-        public ActionResult Edit(int id)
+        public IActionResult Edit(int id)
         {
             using var db = new LibraryDbContext();
             User? user = db.Users.FirstOrDefault(u => u.UserID == id);

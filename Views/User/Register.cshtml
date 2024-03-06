@@ -1,4 +1,8 @@
 @model User
+@{
+    ViewBag.Title = "Register User";
+}
+
 @using (Html.BeginForm("Register", "User", FormMethod.Post))
 {
     <div class="d-flex align-items-center justify-content-center">

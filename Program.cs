@@ -43,7 +43,6 @@ namespace PersonalPortfolio
             //app.UseResponseCaching();
 
             app.MapControllerRoute("default", "{controller=Home}/{action=Index}/{id?}");
-            
             app.Run();
         }
     }

@@ -1,7 +1,7 @@
 @model IEnumerable<User>
 
 @{
-    ViewBag.Title = "Login";
+    ViewBag.Title = "User";
 
     HttpContext httpContext = ViewContext.HttpContext;
     var loggedInUser = httpContext.Session.GetSessionObjectFromJson<User>(Settings.SESSION_USER_KEY);
@@ -12,32 +12,32 @@
 
     <h1>Hello @loggedInUser.UserName</h1>
     <input type="button" value="Logout" onclick="location.href='@Url.Action("Logout")'"/>
-    @if (loggedInUser.IsAdministrator)
-    {
-        <div class="break mt-5"></div>
-        
-        <h3 class="text-center">All users in database</h3>
+
+    @if (!loggedInUser.IsAdministrator) { return; }
+
+    <div class="break mt-5"></div>
+
+    <h3 class="text-center">All users in database</h3>
+    <div class="break"></div>
+    <div class="user-table">
+        <div class="row title-row">
+            <div class="cell title-cell">User name</div>
+            <div class="cell title-cell">Is administrator</div>
+            <div class="cell title-cell">Options</div>
+        </div>
         <div class="break"></div>
-        <div class="user-table">
-            <div class="row title-row">
-                <div class="cell title-cell">User name</div>
-                <div class="cell title-cell">Is administrator</div>
-                <div class="cell title-cell">Options</div>
+
+        @foreach (User user in Model)
+        {
+            <div class="row">
+                <div class="cell">@user.UserName</div>
+                <div class="cell">@(user.IsAdministrator ? "yes" : "no")</div>
+                <div class="cell">
+                    @Html.ActionLink("Edit", "Edit", new { id = user.UserID }) |
+                    @Html.ActionLink("Delete", "Delete", new { id = user.UserID })
+                </div>
             </div>
             <div class="break"></div>
-
-            @foreach (User user in Model)
-            {
-                <div class="row">
-                    <div class="cell">@user.UserName</div>
-                    <div class="cell">@(user.IsAdministrator ? "yes" : "no")</div>
-                    <div class="cell">
-                        @Html.ActionLink("Edit", "Edit", new { id = user.UserID }) |
-                        @Html.ActionLink("Delete", "Delete", new { id = user.UserID })
-                    </div>
-                </div>
-                <div class="break"></div>
-            }
-        </div>
-    }
+        }
+    </div>
 </div>
