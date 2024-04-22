@@ -1,0 +1,18 @@
+@model Book
+@{
+}
+
+
+
+<div class="book-card" style="width: 300px; height: 400px;">
+    @if (ReferenceEquals(null, Model.Cover))
+    {
+        <img src="https://www.freeiconspng.com/uploads/no-image-icon-6.png" alt="NO IMAGE FOUND" style="height: 75%"/>
+    }
+    else
+    {
+        <img src="data:@Model.Cover.FileExtension;base64,@Convert.ToBase64String(Model.Cover.Bytes)" alt="Error loading image" style="width: 75%"/>
+    }
+    <p class="title">@Model.Title</p>
+    <p class="subtitle">@Model.Author.FullName</p>
+</div>

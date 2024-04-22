@@ -7,10 +7,14 @@ namespace PersonalPortfolio.Controllers
 {
     public class BookController : Controller
     {
+        // 10mb
+        private const int MAX_BYTES = 10485760;
+
         public async Task<IActionResult> Index()
         {
             await using var db = new LibraryDbContext();
-            List<Author> authors = await db.Authors.Include(author => author.Books).AsNoTracking().ToListAsync();
+            List<Author> authors = await db.Authors.Include(author => author.Books).ThenInclude(book => book.Cover)
+                .AsNoTracking().ToListAsync();
             return View(authors);
         }
 
@@ -25,14 +29,13 @@ namespace PersonalPortfolio.Controllers
                 return StatusCode(StatusCodes.Status401Unauthorized);
             }
 
-
             await using var db = new LibraryDbContext();
             ViewBag.Authors = GenerateAuthorSelectList(db.Authors);
             return View();
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([Bind("Title, AuthorID")] Book book)
+        public async Task<IActionResult> Create([Bind("Title, AuthorID, CoverFile")] Book book)
         {
             await using var db = new LibraryDbContext();
 
@@ -42,7 +45,31 @@ namespace PersonalPortfolio.Controllers
                 return View(book);
             }
 
-            db.Books.Add(book);
+            Book newbook = new()
+            {
+                Title = book.Title,
+                AuthorID = book.AuthorID
+            };
+
+            if (book.CoverFile is { Length: > 0 })
+            {
+                using (var memoryStream = new MemoryStream())
+                {
+                    book.CoverFile.CopyTo(memoryStream);
+                    if (memoryStream.Length < MAX_BYTES)
+                    {
+                        newbook.Cover = new BookCover
+                        {
+                            Bytes = memoryStream.ToArray(),
+                            FileExtension = book.CoverFile.ContentType
+                        };
+                    }
+                    else { ModelState.AddModelError("CoverFile", "The uploaded file is too large!"); }
+                }
+            }
+
+
+            db.Books.Add(newbook);
             await db.SaveChangesAsync();
             return RedirectToAction("Index");
         }
