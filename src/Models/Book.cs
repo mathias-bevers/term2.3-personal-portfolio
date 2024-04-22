@@ -1,11 +1,12 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.AspNetCore.Mvc;
 
 namespace PersonalPortfolio.Models
 {
     public class Book
     {
-        [Key, Column(Order = 1), DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [Key, Column(Order = 1), DatabaseGenerated(DatabaseGeneratedOption.Identity), ForeignKey("Book")]
         public int BookID { get; set; }
 
         [Required(ErrorMessage = "Please enter a title!"), StringLength(255)]
@@ -15,5 +16,10 @@ namespace PersonalPortfolio.Models
         public int AuthorID { get; set; }
         
         public Author? Author { get; set; } = null!;
+        
+        public BookCover? Cover { get; set; }
+        
+        [FromForm, NotMapped]  
+        public IFormFile? CoverFile { get; set; }   
     }
 }
