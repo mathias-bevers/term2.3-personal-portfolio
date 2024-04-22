@@ -1,0 +1,26 @@
+div.book-card {
+    width: 300px;
+    height: 400px;
+    background-color: #222222;
+    color: ghostwhite;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+.book-card img{
+    object-fit: cover;
+    height: 80%;
+    max-width: 100%;
+}
+
+.book-card p {
+    width: 100%;
+    margin: 0;
+    text-align: center;
+}
+
+p.title {
+    font-weight: bold;    
+}

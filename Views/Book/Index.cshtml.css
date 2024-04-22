@@ -1,6 +1,5 @@
-div .book-card {
-    width: 600px;
-    height: 800px;
-    background-color: #222222;
-    color: ghostwhite;
+.book-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
 }
