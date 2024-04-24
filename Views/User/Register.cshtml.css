@@ -1,0 +1,42 @@
+.form-table {
+    padding: 1rem;
+    outline: solid #202020;
+    flex-direction: column;
+    flex-wrap: wrap;
+    width: 30vw;
+    display: flex;
+}
+
+.row {
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    width: 100%;
+    margin: 0.25rem 0 0 0;
+}
+
+.row:nth-child(1) {
+    flex: 2;
+    font-size: 2rem;
+    margin: 0;
+}
+
+.cell {
+    padding: 0;
+    display: flex;
+    flex: 1;
+    justify-content: space-between;
+}
+
+.button-container > input {
+    flex: 1;
+}
+
+.button-container > input:nth-child(2) {
+    margin: 0 2rem;
+}
+
+input:not([type="submit"]) {
+    font-weight: normal;
+}

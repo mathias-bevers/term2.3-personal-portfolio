@@ -1,0 +1,22 @@
+@model IEnumerable<Author>
+@{
+    ViewBag.Title = "Books";
+    var user = ViewContext.HttpContext.Session.GetSessionObjectFromJson<User>(Settings.SESSION_USER_KEY);
+}
+<h1>@ViewBag.Title</h1>
+@if (Model.Any())
+{
+    <div class="book-container">
+        @foreach (Author author in Model)
+        {
+            foreach (Book book in author.Books)
+            {
+                @(await Html.PartialAsync("_BookCard", book))
+            }
+        }
+    </div>
+}
+
+@if (user is not { IsAdministrator: true }) { return; }
+
+<div>@Html.ActionLink("New", "create")</div>

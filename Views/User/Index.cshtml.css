@@ -1,0 +1,59 @@
+div.page {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    width: 50%;
+    margin: auto;
+}
+
+.break {
+    flex-basis: 100%;
+    height: 0;
+}
+
+input {
+    width: 250px;
+}
+
+h3 {
+    width: 100%;
+}
+
+.user-table {
+    flex: 1;
+    border: solid black 2px;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.row {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    --bs-gutter-x: 0;
+}
+
+.row:nth-child(4n+1) {
+    background-color: lightgray;
+}
+
+.cell {
+    flex: 1;
+    min-height: 2.5rem;
+    line-height: 2.5rem;
+}
+
+.cell:first-of-type {
+    padding-left: 0.5rem;
+}
+
+.cell:last-of-type {
+    text-align: end;
+    padding-right: 0.5rem;
+}
+
+.title-row > .cell {
+    background-color: black;
+    font-weight: bold;
+    color: white;
+}

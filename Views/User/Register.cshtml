@@ -1,0 +1,59 @@
+@model User
+@{
+    ViewBag.Title = "Register User";
+}
+
+@using (Html.BeginForm("Register", "User", FormMethod.Post))
+{
+    <div class="d-flex align-items-center justify-content-center">
+        <div class="form-table">
+            <div class="row">
+                <div class="p-0 text-center">REGISTER</div>
+            </div>
+            <div class="row">
+                <div class="cell">@Html.LabelFor(user => user.UserName)</div>
+                <div class="cell">@Html.EditorFor(user => user.UserName)</div>
+            </div>
+            <div class="row">
+                <div class="cell"></div>
+                <div class="cell">@Html.ValidationMessageFor(user => user.UserName, "", new { @class = "text-danger" })</div>
+            </div>
+            <div class="row">
+                <div class="cell">@Html.LabelFor(user => user.Password)</div>
+                <div class="cell">@Html.EditorFor(user => user.Password)</div>
+            </div>
+            <div class="row">
+                <div class="cell"></div>
+                <div class="cell">@Html.ValidationMessageFor(user => user.Password, "", new { @class = "text-danger" })</div>
+            </div>
+            <div class="row">
+                <div class="cell">@Html.Label("Repeat password")</div>
+                <div class="cell">@Html.Editor("confirmPW", new { required = "required", htmlAttributes = new { type = "password" } })</div>
+            </div>
+            <div class="row">
+                <div class="cell"></div>
+                <div class="cell">
+                    @Html.ValidationMessage("confirmPW", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="row">
+                <div class="cell">
+                    <label class="text-danger">@Html.DisplayFor(user => user.ErrorMessage)</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="cell button-container">
+                    <input type="submit" value="Register"/>
+                    <input type="reset" value="Reset"/>
+                    <input type="button" value="Login" onclick="location.href='@Url.Action("Login")'"/>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<style>
+    input.text-box {
+        width: 100%;
+    }
+</style>
